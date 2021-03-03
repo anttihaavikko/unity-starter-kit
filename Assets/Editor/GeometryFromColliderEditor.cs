@@ -1,19 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
+using Visuals;
 
-[CustomEditor(typeof(GeometryFromColliderScript))]
-public class GeometryFromColliderEditor : Editor {
+namespace Editor
+{
+	[CustomEditor(typeof(GeometryFromColliderScript))]
+	public class GeometryFromColliderEditor : UnityEditor.Editor {
 
-	public override void OnInspectorGUI()
-	{
-		DrawDefaultInspector();
+		public override void OnInspectorGUI()
+		{
+			DrawDefaultInspector();
 
-		GeometryFromColliderScript myScript = (GeometryFromColliderScript)target;
+			var myScript = (GeometryFromColliderScript)target;
 
-		if(GUILayout.Button("Generate Geometry")) {
-			myScript.GenerateGeometry();
+			if(GUILayout.Button("Generate Geometry")) {
+				myScript.GenerateGeometry();
+			}
 		}
 	}
 }

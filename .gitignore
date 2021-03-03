@@ -6,6 +6,7 @@ Library/
 Builds/
 Assets/_Ghosts/
 Scripts/Secrets.cs
+Logs/
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
@@ -20,7 +21,6 @@ obj/
 *.user
 *.unityproj
 *.booproj
-
 # ============ #
 # OS generated #
 # ============ #
@@ -31,3 +31,8 @@ obj/
 .Trashes
 ehthumbs.db
 Thumbs.db
+# ============ #
+# Ionide #
+# ============ #
+.fake
+.ionide

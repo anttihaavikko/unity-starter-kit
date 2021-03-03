@@ -1,19 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
+using Visuals;
 
-[CustomEditor(typeof(BoxOutlinerScript))]
-public class BoxOutlinerEditor : Editor {
+namespace Editor
+{
+	[CustomEditor(typeof(BoxOutlinerScript))]
+	public class BoxOutlinerEditor : UnityEditor.Editor {
 
-	public override void OnInspectorGUI()
-	{
-		DrawDefaultInspector();
-
-		BoxOutlinerScript myScript = (BoxOutlinerScript)target;
-		if(GUILayout.Button("Fix outline"))
+		public override void OnInspectorGUI()
 		{
-			myScript.DoOutline();
+			DrawDefaultInspector();
+
+			var myScript = (BoxOutlinerScript)target;
+			if(GUILayout.Button("Fix outline"))
+			{
+				myScript.DoOutline();
+			}
 		}
 	}
 }
