@@ -6,7 +6,7 @@ Shader "Custom/WorldDisplace"
 	Properties
 	{
 		_MainTex("Main", 2D) = "white" {}
-		_DisplaceTex("Displace", 2D) = "white" {}
+		_DisplaceTex("Displace", 2D) = "black" {}
 		_Amount("Amount", Float) = 0.01
 	}
 
@@ -72,18 +72,9 @@ Shader "Custom/WorldDisplace"
 
 			float4 frag(v2f i) : SV_Target
 			{
-				
 				float4 disp = tex2D(_DisplaceTex, i.screenuv);
-
 				fixed2 direction = normalize(float2((disp.r - 0.5) * 2, (disp.g - 0.5) * 2));
-
-				float4 color = tex2D(_MainTex, i.uv + _Amount * direction * disp.b) * i.color;
-
-				// color = color + disp;
-
-				// color = 1 - color;
-
-				return color;
+				return tex2D(_MainTex, i.uv + _Amount * direction * disp.b) * i.color;
 			}
 			ENDCG
 		}

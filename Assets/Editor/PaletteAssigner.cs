@@ -118,7 +118,7 @@ namespace Editor
             EditorGUILayout.BeginHorizontal();
             newHex = EditorGUILayout.TextField(newHex);
             EditorGUILayout.Space();
-            if (GUILayout.Button("Add color with hex"))
+            if (GUILayout.Button("Add"))
             {
                 if (!newHex.StartsWith("#")) newHex = "#" + newHex;
 
@@ -138,7 +138,7 @@ namespace Editor
             EditorGUILayout.BeginHorizontal();
             newColor = EditorGUILayout.ColorField(newColor);
             EditorGUILayout.Space();
-            if (GUILayout.Button("Add color"))
+            if (GUILayout.Button("Add"))
             {
                 palette.Add(newColor);
                 SavePalette();
