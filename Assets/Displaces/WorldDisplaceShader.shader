@@ -8,6 +8,7 @@ Shader "Custom/WorldDisplace"
 		_MainTex("Main", 2D) = "white" {}
 		_DisplaceTex("Displace", 2D) = "black" {}
 		_Amount("Amount", Float) = 0.01
+		[Toggle] _Flip("Flip", Float) = 0
 	}
 
 	SubShader
@@ -67,12 +68,18 @@ Shader "Custom/WorldDisplace"
 			sampler2D _MainTex;
 			sampler2D _DisplaceTex;
 			float _Amount;
+			float _Flip;
 
 			uniform sampler2D _GlobalDisplaceTex;
 
 			float4 frag(v2f i) : SV_Target
 			{
-				float4 disp = tex2D(_DisplaceTex, i.screenuv);
+				float2 suv = i.screenuv;
+				if(_Flip > 0.5)
+				{
+					suv.y = 1.0 - suv.y;	
+				}
+				float4 disp = tex2D(_DisplaceTex, suv);
 				fixed2 direction = normalize(float2((disp.r - 0.5) * 2, (disp.g - 0.5) * 2));
 				return tex2D(_MainTex, i.uv + _Amount * direction * disp.b) * i.color;
 			}
