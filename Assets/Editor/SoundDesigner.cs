@@ -17,7 +17,10 @@ namespace Editor
         [MenuItem("Window/SoundDesigner")]
         public static void ShowWindow()
         {
-            GetWindow(typeof(SoundDesigner));
+            var window = GetWindow(typeof(SoundDesigner));
+            var icon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/Editor/Icons/palette.png");
+            var titleContent = new GUIContent("Sound Designer", icon);
+            window.titleContent = titleContent;
         }
 
         private void FindAudioManager()
@@ -27,7 +30,10 @@ namespace Editor
 
         private void OnGUI()
         {
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal(new GUIStyle
+            {
+                padding = new RectOffset(10, 10, 10, 10)
+            });
 
             if (am)
             {
@@ -63,7 +69,10 @@ namespace Editor
 
             if (sounds.Count > 0)
             {
-                EditorGUILayout.BeginVertical();
+                EditorGUILayout.BeginVertical(new GUIStyle
+                {
+                    padding = new RectOffset(10, 0, 0, 0)
+                });
                 EditorGUILayout.Space();
 
                 output = "";
@@ -73,7 +82,7 @@ namespace Editor
                     var sb = sounds[i];
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(am.effects[sounds[i]].name, EditorStyles.boldLabel, GUILayout.MaxWidth(150.0f));
-                    soundVolumes[i] = EditorGUILayout.Slider("", soundVolumes[i], 0f, 2f);
+                    soundVolumes[i] = EditorGUILayout.Slider("", soundVolumes[i], 0f, 5f);
                     if (GUILayout.Button("Play", GUILayout.MaxWidth(70.0f)))
                     {
                         Play(sounds[i]);
