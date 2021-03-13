@@ -22,10 +22,7 @@ namespace Editor
 
         private void FindAudioManager()
         {
-            am = GameObject.Find("Audio Manager").GetComponent<AudioManager>();
-        
-            if(!am)
-                am = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+            am = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         }
 
         private void OnGUI()
