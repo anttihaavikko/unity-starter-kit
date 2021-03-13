@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace Editor
@@ -150,9 +149,10 @@ namespace Editor
         private void LoadPalette()
         {
             var key = GetKeyName();
-            if (EditorPrefs.HasKey(key))
+            if (File.Exists(Application.persistentDataPath + "/palette.json"))
             {
-                var json = EditorPrefs.GetString(key);
+                // var json = EditorPrefs.GetString(key);
+                var json = File.ReadAllText(Application.persistentDataPath + "/palette.json");
                 var data = JsonUtility.FromJson<Palette>(json);
                 palette = data.ToList();
 
@@ -168,7 +168,8 @@ namespace Editor
         {
             var data = new Palette(palette);
             var json = JsonUtility.ToJson(data);
-            EditorPrefs.SetString(GetKeyName(), json);
+            // EditorPrefs.SetString(GetKeyName(), json);
+            File.WriteAllText(Application.persistentDataPath + "/palette.json", json);
         }
 
         private static string GetKeyName()
