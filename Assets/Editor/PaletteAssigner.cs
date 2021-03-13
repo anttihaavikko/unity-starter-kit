@@ -198,6 +198,8 @@ namespace Editor
                 // camera
                 var cam = obj.GetComponent<Camera>();
                 if (cam) cam.backgroundColor = color;
+                
+                EditorUtility.SetDirty(obj);
             }
         }
     }
