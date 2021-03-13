@@ -10,6 +10,7 @@ namespace Visuals
     {
         public CinemachineVirtualCamera virtualCamera;
         public Volume ppVolume;
+        public Material colorSplitMaterial;
 
         public float returnSpeed = 0.6f;
         public float shakeChance = 0.3f;
@@ -29,6 +30,7 @@ namespace Visuals
         private ChromaticAberration ca;
         private LensDistortion ld;
         private ColorAdjustments cg;
+        private static readonly int Amount = Shader.PropertyToID("_Amount");
 
         private void Start()
         {
@@ -61,6 +63,9 @@ namespace Visuals
             
             chromaAmount = Mathf.MoveTowards(chromaAmount, 0, Time.deltaTime * chromaSpeed);
             ca.intensity.value = chromaAmount * 0.7f * 3f;
+            
+            if(colorSplitMaterial)
+                colorSplitMaterial.SetFloat(Amount, chromaAmount * 0.02f);
 
             bulgeAmount = Mathf.MoveTowards(bulgeAmount, defaultLensDistortion, Time.deltaTime * bulgeSpeed);
             ld.intensity.value = bulgeAmount;
