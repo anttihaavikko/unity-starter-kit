@@ -1,5 +1,5 @@
-﻿using Animations;
-using Managers;
+﻿using AnttiStarterKit.Animations;
+using AnttiStarterKit.Managers;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace

@@ -1,4 +1,4 @@
-﻿using Animations;
+﻿using AnttiStarterKit.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

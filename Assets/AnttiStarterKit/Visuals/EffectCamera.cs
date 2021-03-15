@@ -1,5 +1,5 @@
 ﻿using Cinemachine;
-using Extensions;
+using AnttiStarterKit.Extensions;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;

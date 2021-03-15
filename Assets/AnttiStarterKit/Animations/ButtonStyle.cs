@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Animations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

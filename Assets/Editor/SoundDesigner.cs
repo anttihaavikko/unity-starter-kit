@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using Managers;
+using AnttiStarterKit.Managers;
 using UnityEditor;
 using UnityEngine;
 

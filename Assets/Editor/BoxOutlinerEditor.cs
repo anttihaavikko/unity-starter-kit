@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using Visuals;
+using AnttiStarterKit.Visuals;
 
 namespace Editor
 {

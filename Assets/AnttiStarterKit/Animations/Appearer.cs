@@ -1,6 +1,4 @@
 ﻿using System;
-using Extensions;
-using Managers;
 using TMPro;
 using UnityEngine;
 
