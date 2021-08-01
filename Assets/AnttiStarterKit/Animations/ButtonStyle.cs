@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,7 +17,9 @@ namespace AnttiStarterKit.Animations
         [SerializeField] private float rotationAmount;
     
         [SerializeField] private List<Image> frontImages, bgImages;
-        [SerializeField] private TMP_Text text;
+        [SerializeField] private List<TMP_Text> texts;
+
+        [SerializeField] private bool doColors;
     
         [SerializeField] private Color backColor, frontColor;
 
@@ -40,7 +43,7 @@ namespace AnttiStarterKit.Animations
         {
             ApplyScaling(scaleAmount, TweenEasings.BounceEaseOut);
             ApplyRotation(Random.Range(-rotationAmount, rotationAmount), TweenEasings.BounceEaseOut);
-            // ApplyColors(backColor, frontColor);
+            ApplyColors(backColor, frontColor);
         
             var pos = GetSoundPos();
             // AudioManager.Instance.PlayEffectAt(53, pos, 0.22f);
@@ -65,6 +68,8 @@ namespace AnttiStarterKit.Animations
 
         private void ApplyColors(Color back, Color front)
         {
+            if (!doColors) return;
+            
             bgImages.ForEach(i =>
             {
                 originalBackColor = i.color;
@@ -77,16 +82,16 @@ namespace AnttiStarterKit.Animations
                 i.color = front;
             });
 
-            if (!text) return;
-            originalFrontColor = text.color;
-            text.color = front;
+            if (!texts.Any()) return;
+            originalFrontColor = texts.First().color;
+            texts.ForEach(t => t.color = front);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             ApplyScaling(0, TweenEasings.BounceEaseOut);
             ApplyRotation(0, TweenEasings.BounceEaseOut);
-            // ApplyColors(originalBackColor, originalFrontColor);
+            ApplyColors(originalBackColor, originalFrontColor);
         }
 
         public void OnPointerClick(PointerEventData eventData)
