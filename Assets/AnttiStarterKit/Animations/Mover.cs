@@ -5,22 +5,27 @@ namespace AnttiStarterKit.Animations
 	public class Mover : MonoBehaviour {
 
 		public float speed = 1f;
-		public float offset = 0f;
-		public bool noNegatives = false;
+		public float offset;
+		public bool noNegatives;
 		public Vector3 direction = Vector3.up;
 
-		private Vector3 originalPosition;
+		[SerializeField] private bool randomizeOffset;
 
-		// Use this for initialization
-		void Start () {
-			originalPosition = transform.localPosition;
+		private Vector3 _originalPosition;
+
+		private void Start () {
+			_originalPosition = transform.localPosition;
+
+			if (randomizeOffset)
+			{
+				offset = Random.value * 100f;
+			}
 		}
-
-		// Update is called once per frame
-		void Update () {
-			float sinVal = Mathf.Sin (Time.time * speed + offset * Mathf.PI);
+		
+		private void Update () {
+			var sinVal = Mathf.Sin (Time.time * speed + offset * Mathf.PI);
 			sinVal = noNegatives ? Mathf.Abs (sinVal) : sinVal;
-			transform.localPosition = originalPosition + direction * sinVal;
+			transform.localPosition = _originalPosition + direction * sinVal;
 		}
 	}
 }
