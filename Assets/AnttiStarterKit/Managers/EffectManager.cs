@@ -80,5 +80,19 @@ namespace AnttiStarterKit.Managers
 			obj.gameObject.SetActive(false);
 			effectPool[obj.Pool].Enqueue(obj);
 		}
+
+		public static void AddEffects(IEnumerable<int> ids, Vector3 position)
+		{
+			foreach (var id in ids)
+			{
+				Instance.AddEffect(id, position);
+			}
+		}
+
+		public static GameObject AddEffect(int id, Vector3 position)
+		{
+			var eff = Instance.AddEffect(id, position);
+			return eff.gameObject;
+		}
 	}
 }
