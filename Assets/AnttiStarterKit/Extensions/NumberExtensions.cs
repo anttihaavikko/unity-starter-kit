@@ -16,5 +16,10 @@ namespace AnttiStarterKit.Extensions
         {
             return TextUtils.NumberWithSign(value);
         }
+        
+        public static float Remap(this float value, float valueRangeMin, float valueRangeMax, float newRangeMin, float newRangeMax)
+        {
+            return (value - valueRangeMin) / (valueRangeMax - valueRangeMin) * (newRangeMax - newRangeMin) + newRangeMin;
+        }
     }
 }
