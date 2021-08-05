@@ -9,9 +9,11 @@ namespace Editor
 {
     public class PaletteAssigner : EditorWindow
     {
-        private List<Color> palette;
-        private Color newColor = Color.white;
-        private string newHex = "#ffffff";
+        private List<Color> _palette;
+        private Color _newColor = Color.white;
+        private string _newHex = "#ffffff";
+
+        private static string SaveFile => "Assets/Editor/palette.json";
 
         [MenuItem("Window/Palette")]
         public static void ShowWindow()
@@ -25,7 +27,7 @@ namespace Editor
 
         private void OnEnable()
         {
-            palette = new List<Color>();
+            _palette = new List<Color>();
             LoadPalette();
         }
 
@@ -46,7 +48,7 @@ namespace Editor
 
             var removeIndex = -1;
 
-            foreach (var color in palette)
+            foreach (var color in _palette)
             {
                 var style = new GUIStyle
                 {
@@ -83,7 +85,7 @@ namespace Editor
 
             if(removeIndex > -1)
             {
-                palette.RemoveAt(removeIndex);
+                _palette.RemoveAt(removeIndex);
                 SavePalette();
             }
             
@@ -115,15 +117,15 @@ namespace Editor
         {
             EditorGUILayout.LabelField("Add color with hex");
             EditorGUILayout.BeginHorizontal();
-            newHex = EditorGUILayout.TextField(newHex);
+            _newHex = EditorGUILayout.TextField(_newHex);
             EditorGUILayout.Space();
             if (GUILayout.Button("Add"))
             {
-                if (!newHex.StartsWith("#")) newHex = "#" + newHex;
+                if (!_newHex.StartsWith("#")) _newHex = "#" + _newHex;
 
-                if (ColorUtility.TryParseHtmlString(newHex, out var fromHex))
+                if (ColorUtility.TryParseHtmlString(_newHex, out var fromHex))
                 {
-                    palette.Add(fromHex);
+                    _palette.Add(fromHex);
                     SavePalette();
                 }
             }
@@ -135,11 +137,11 @@ namespace Editor
         {
             EditorGUILayout.LabelField("Add color");
             EditorGUILayout.BeginHorizontal();
-            newColor = EditorGUILayout.ColorField(newColor);
+            _newColor = EditorGUILayout.ColorField(_newColor);
             EditorGUILayout.Space();
             if (GUILayout.Button("Add"))
             {
-                palette.Add(newColor);
+                _palette.Add(_newColor);
                 SavePalette();
             }
 
@@ -149,27 +151,27 @@ namespace Editor
         private void LoadPalette()
         {
             var key = GetKeyName();
-            if (File.Exists(Application.persistentDataPath + "/palette.json"))
+            if (File.Exists(SaveFile))
             {
                 // var json = EditorPrefs.GetString(key);
-                var json = File.ReadAllText(Application.persistentDataPath + "/palette.json");
+                var json = File.ReadAllText(SaveFile);
                 var data = JsonUtility.FromJson<Palette>(json);
-                palette = data.ToList();
+                _palette = data.ToList();
 
             }
             else
             {
-                palette.Add(Color.black);
-                palette.Add(Color.white);
+                _palette.Add(Color.black);
+                _palette.Add(Color.white);
             }
         }
 
         private void SavePalette()
         {
-            var data = new Palette(palette);
+            var data = new Palette(_palette);
             var json = JsonUtility.ToJson(data);
             // EditorPrefs.SetString(GetKeyName(), json);
-            File.WriteAllText(Application.persistentDataPath + "/palette.json", json);
+            File.WriteAllText(SaveFile, json);
         }
 
         private static string GetKeyName()
