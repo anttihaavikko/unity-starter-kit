@@ -14,7 +14,7 @@ namespace AnttiStarterKit.Utils
             return "<color=" + color + ">" + text + "</color>";
         }
 
-        public static string TextWith(string text, string color, int size)
+        public static string TextWith(string text, string color, float size)
         {
             return "<size=" + size + ">" + "<color=" + color + ">" + text + "</color></size>";
         }
@@ -29,6 +29,11 @@ namespace AnttiStarterKit.Utils
         {
             var hex = ColorUtility.ToHtmlStringRGB(color);
             return "<size=" + size + ">" + "<color=#" + hex + ">" + text + "</color></size>";
+        }
+
+        public static string NumberWithSign(int number)
+        {
+            return number > 0 ? $"+{number}" : number.ToString();
         }
     }
 }

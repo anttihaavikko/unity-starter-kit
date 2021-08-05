@@ -9,5 +9,10 @@ namespace AnttiStarterKit.Extensions
             var scale = t.localScale;
             t.localScale = new Vector3((shouldMirror ? -1f : 1f) * scale.x, scale.y, scale.z);
         }
+
+        public static Vector3 DirectionTo(this Transform t, Transform target)
+        {
+            return target.position - t.position;
+        }
     }
 }
