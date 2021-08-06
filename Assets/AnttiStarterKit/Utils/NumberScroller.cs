@@ -14,8 +14,6 @@ namespace AnttiStarterKit.Utils
         [SerializeField] private float minSpeed = 0.3f;
         [SerializeField] private float maxSpeed = 3f;
         [SerializeField] private float additionShowTime = 2.5f;
-        
-        
 
         private int _value;
         private float _shownValue;
@@ -23,6 +21,7 @@ namespace AnttiStarterKit.Utils
 
         private void Update()
         {
+            if (Mathf.Abs(_shownValue - _value) < 0.1f) return;
             var speed = Mathf.Max(Mathf.Abs(_value - _shownValue) * Time.deltaTime * maxSpeed, minSpeed);
             _shownValue = Mathf.MoveTowards(_shownValue, _value, speed);
             valueField.text = Mathf.RoundToInt(_shownValue).ToString();
