@@ -6,28 +6,29 @@ namespace AnttiStarterKit.Animations
 	public class Tweener : MonoBehaviour {
 
 		public AnimationCurve[] customEasings;
-		private List<TweenAction> actions;
+		
+		private List<TweenAction> _actions;
 
-		private static Tweener instance = null;
+		private static Tweener _instance = null;
 		public static Tweener Instance {
-			get { return instance; }
+			get { return _instance; }
 		}
 
-		void Awake() {
-			if (instance != null && instance != this) {
+		private void Awake() {
+			if (_instance != null && _instance != this) {
 				Destroy (this.gameObject);
 				return;
 			} else {
-				instance = this;
+				_instance = this;
 			}
 
-			actions = new List<TweenAction> ();
+			_actions = new List<TweenAction> ();
 		}
 
-		void Update() {
-			for (int i = actions.Count - 1; i >= 0; i--) {
-				if (actions [i].Process ()) {
-					actions.RemoveAt (i);
+		private void Update() {
+			for (var i = _actions.Count - 1; i >= 0; i--) {
+				if (_actions [i].Process ()) {
+					_actions.RemoveAt (i);
 				}
 			}
 		}
@@ -36,16 +37,16 @@ namespace AnttiStarterKit.Animations
 			// remove old ones of same object
 			if(removeOld)
 			{
-				for (int i = actions.Count - 1; i >= 0; i--)
+				for (int i = _actions.Count - 1; i >= 0; i--)
 				{
-					if (actions[i].theObject == obj && actions[i].type == type)
+					if (_actions[i].theObject == obj && _actions[i].type == type)
 					{
-						actions.RemoveAt(i);
+						_actions.RemoveAt(i);
 					}
 				}
 			}
 
-			TweenAction act = new TweenAction
+			var act = new TweenAction
 			{
 				type = type,
 				theObject = obj,
@@ -55,73 +56,109 @@ namespace AnttiStarterKit.Animations
 				tweenDelay = delay,
 				customEasing = easeIndex
 			};
-			actions.Add (act);
+			_actions.Add (act);
 
 			act.easeFunction = ease;
 
 			return act;
 		}
 
+		public static void MoveToBounceOut(Transform obj, Vector3 target, float duration, float delay = 0f)
+		{
+			Instance.MoveTo(obj, target, duration, delay, TweenEasings.BounceEaseOut);
+		}
+		
+		public static void MoveToQuad(Transform obj, Vector3 target, float duration, float delay = 0f)
+		{
+			Instance.MoveTo(obj, target, duration, delay, TweenEasings.QuadraticEaseInOut);
+		}
+		
+		public static void MoveTo(Transform obj, Vector3 target, float duration, System.Func<float, float> ease = null, float delay = 0f)
+		{
+			Instance.MoveTo(obj, target, duration, delay, ease);
+		}
+
 		public void MoveTo(Transform obj, Vector3 target, float duration, float delay, System.Func<float, float> ease = null, int easeIndex = -1, bool removeOld = true) {
-
-			if (ease == null) {
-				ease = TweenEasings.LinearInterpolation;
-			}
-
-			TweenAction act = AddTween (obj, target, TweenAction.Type.Position, duration, delay, ease, easeIndex, removeOld);
+			ease ??= TweenEasings.LinearInterpolation;
+			var act = AddTween (obj, target, TweenAction.Type.Position, duration, delay, ease, easeIndex, removeOld);
 			act.startPos = act.theObject.position;
 			StartCoroutine(act.SetStartPos());
 		}
 
 		public void MoveLocalTo(Transform obj, Vector3 target, float duration, float delay, System.Func<float, float> ease = null, int easeIndex = -1, bool removeOld = true) {
-
-			if (ease == null) {
-				ease = TweenEasings.LinearInterpolation;
-			}
-
-			TweenAction act = AddTween (obj, target, TweenAction.Type.LocalPosition, duration, delay, ease, easeIndex, removeOld);
+			ease ??= TweenEasings.LinearInterpolation;
+			var act = AddTween (obj, target, TweenAction.Type.LocalPosition, duration, delay, ease, easeIndex, removeOld);
 			act.startPos = act.theObject.localPosition;
 			StartCoroutine(act.SetStartLocalPos());
 		}
-
-		public void MoveFor(Transform obj, Vector3 target, float duration, float delay, System.Func<float, float> ease = null, int easeIndex = -1, bool removeOld = true) {
-			MoveTo (obj, obj.position + target, duration, delay, ease, easeIndex, removeOld);
+		
+		public static void MoveLocalToBounceOut(Transform obj, Vector3 target, float duration, float delay = 0f)
+		{
+			Instance.MoveLocalTo(obj, target, duration, delay, TweenEasings.BounceEaseOut);
+		}
+		
+		public static void MoveLocalToQuad(Transform obj, Vector3 target, float duration, float delay = 0f)
+		{
+			Instance.MoveLocalTo(obj, target, duration, delay, TweenEasings.QuadraticEaseInOut);
+		}
+		
+		public static void MoveLocalTo(Transform obj, Vector3 target, float duration, System.Func<float, float> ease = null, float delay = 0f)
+		{
+			Instance.MoveLocalTo(obj, target, duration, delay, ease);
 		}
 
-		public void MoveLocalFor(Transform obj, Vector3 target, float duration, float delay, System.Func<float, float> ease = null, int easeIndex = -1, bool removeOld = true) {
-			MoveLocalFor (obj, obj.localPosition + target, duration, delay, ease, easeIndex, removeOld);
+		public static void RotateToBounceOut(Transform obj, Quaternion rotation, float duration, float delay = 0f)
+		{
+			Instance.RotateTo(obj, rotation, duration, delay, TweenEasings.BounceEaseOut);
+		}
+		
+		public static void RotateToQuad(Transform obj, Quaternion rotation, float duration, float delay = 0f)
+		{
+			Instance.RotateTo(obj, rotation, duration, delay, TweenEasings.QuadraticEaseInOut);
 		}
 
 		public void RotateTo(Transform obj, Quaternion rotation, float duration, float delay, System.Func<float, float> ease = null, int easeIndex = -1, bool removeOld = true) {
-			if (ease == null) {
-				ease = TweenEasings.LinearInterpolation;
-			}
-
-			TweenAction act = AddTween (obj, Vector3.zero, TweenAction.Type.Rotation, duration, delay, ease, easeIndex, removeOld);
+			ease ??= TweenEasings.LinearInterpolation;
+			var act = AddTween (obj, Vector3.zero, TweenAction.Type.Rotation, duration, delay, ease, easeIndex, removeOld);
 			act.startRot = act.theObject.rotation;
 			act.targetRot = rotation;
 			StartCoroutine(act.SetStartRot());
 		}
 
-		public void RotateFor(Transform obj, Quaternion rotation, float duration, float delay, System.Func<float, float> ease = null, int easeIndex = -1, bool removeOld = true) {
-			RotateTo (obj, obj.rotation * rotation, duration, delay, ease, easeIndex, removeOld);
+		public static void ScaleToBounceOut(Transform obj, Vector3 target, float duration, float delay = 0f)
+		{
+			Instance.ScaleTo(obj, target, duration, delay, TweenEasings.BounceEaseOut);
+		}
+		
+		public static void ScaleToQuad(Transform obj, Vector3 target, float duration, float delay = 0f)
+		{
+			Instance.ScaleTo(obj, target, duration, delay, TweenEasings.QuadraticEaseInOut);
+		}
+		
+		public static void ScaleTo(Transform obj, Vector3 target, float duration, System.Func<float, float> ease = null, float delay = 0f)
+		{
+			Instance.ScaleTo(obj, target, duration, delay, ease);
 		}
 
 		public void ScaleTo(Transform obj, Vector3 target, float duration, float delay, System.Func<float, float> ease = null, int easeIndex = -1, bool removeOld = true) {
-			if (ease == null) {
-				ease = TweenEasings.LinearInterpolation;
-			}
-
-			TweenAction act = AddTween (obj, target, TweenAction.Type.Scale, duration, delay, ease, easeIndex, removeOld);
+			ease ??= TweenEasings.LinearInterpolation;
+			var act = AddTween (obj, target, TweenAction.Type.Scale, duration, delay, ease, easeIndex, removeOld);
 			StartCoroutine(act.SetStartScale());
+		}
+		
+		public static void ColorToBounceOut(SpriteRenderer obj, Color target, float duration, float delay = 0f)
+		{
+			Instance.ColorTo(obj, target, duration, delay, TweenEasings.BounceEaseOut);
+		}
+		
+		public static void ColorToQuad(SpriteRenderer obj, Color target, float duration, float delay = 0f)
+		{
+			Instance.ColorTo(obj, target, duration, delay, TweenEasings.QuadraticEaseInOut);
 		}
 
 		public void ColorTo(SpriteRenderer obj, Color color, float duration, float delay, System.Func<float, float> ease = null, int easeIndex = -1, bool removeOld = true) {
-			if (ease == null) {
-				ease = TweenEasings.LinearInterpolation;
-			}
-
-			TweenAction act = AddTween (obj.transform, Vector3.zero, TweenAction.Type.Color, duration, delay, ease, easeIndex, removeOld);
+			ease ??= TweenEasings.LinearInterpolation;
+			var act = AddTween (obj.transform, Vector3.zero, TweenAction.Type.Color, duration, delay, ease, easeIndex, removeOld);
 			act.sprite = obj;
 			act.startColor = act.sprite.color;
 			act.targetColor = color;
