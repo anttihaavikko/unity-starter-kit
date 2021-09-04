@@ -8,7 +8,7 @@ namespace AnttiStarterKit.Visuals
 {
     public class EffectCamera : MonoBehaviour
     {
-        public CinemachineVirtualCamera virtualCamera;
+        public Transform cameraRig;
         public Volume ppVolume;
         public Material colorSplitMaterial;
 
@@ -35,7 +35,7 @@ namespace AnttiStarterKit.Visuals
         private void Start()
         {
             InitPostProcessing();
-            originalPos = virtualCamera.transform.position;
+            originalPos = cameraRig.position;
         }
 
         private void InitPostProcessing()
@@ -89,14 +89,16 @@ namespace AnttiStarterKit.Visuals
                     Random.Range(-shakeAmount, shakeAmount) * mod, 0);
 
                 var rot = Quaternion.Euler(0, 0, Random.Range(-shakeAmount, shakeAmount) * mod * 1.5f);
-                var pos = virtualCamera.transform.position;
-                virtualCamera.ForceCameraPosition(pos + diff * 0.075f, rot);
+                var pos = cameraRig.transform.position;
+                cameraRig.position = pos + diff * 0.075f;
+                cameraRig.rotation = rot;
             }
             else
             {
-                var p = Vector3.MoveTowards(virtualCamera.transform.position, originalPos, Time.deltaTime * returnSpeed);
-                var r = Quaternion.RotateTowards(virtualCamera.transform.rotation, Quaternion.identity, Time.deltaTime);
-                virtualCamera.ForceCameraPosition(p, r);
+                var p = Vector3.MoveTowards(cameraRig.transform.position, originalPos, Time.deltaTime * returnSpeed);
+                var r = Quaternion.RotateTowards(cameraRig.transform.rotation, Quaternion.identity, Time.deltaTime);
+                cameraRig.position = p;
+                cameraRig.rotation = r;
             }
         }
 
@@ -126,7 +128,7 @@ namespace AnttiStarterKit.Visuals
         public void BaseEffect(float mod = 1f) {
             Shake(2.5f * mod, 0.8f * mod);
             Chromate(0.5f * mod, 0.5f * mod);
-            Bulge(defaultLensDistortion * 2f * mod, 1f * mod);
+            Bulge(defaultLensDistortion + 1f * mod, 1f * mod);
             Decolor(0.5f * mod, 3f * mod);
         }
 

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using AnttiStarterKit.ScriptableObjects;
+using UnityEngine;
 
 namespace AnttiStarterKit.Managers
 {
@@ -25,6 +27,9 @@ namespace AnttiStarterKit.Managers
 		private float fadeOutDuration = 1f, fadeInDuration = 3f;
 
 		private bool doingLowpass, doingHighpass;
+
+		[SerializeField] private List<SoundCollection> soundCollections;
+		
 
 		/******/
 
@@ -120,8 +125,20 @@ namespace AnttiStarterKit.Managers
 			}
 		}
 
+		public void PlayEffectFromCollection(int collection, Vector3 pos, float volume = 1f)
+		{
+			var clip = soundCollections[collection].Random();
+			PlayEffectAt(clip, pos, volume);
+		}
+		
+		public void PlayEffectFromCollection(SoundCollection collection, Vector3 pos, float volume = 1f)
+		{
+			var clip = collection.Random();
+			PlayEffectAt(clip, pos, volume);
+		}
+
 		public void PlayEffectAt(AudioClip clip, Vector3 pos, float volume, bool pitchShift = true) {
-			SoundEffect se = Get();
+			var se = Get();
 			se.transform.position = pos;
 			se.Play (clip, volume, pitchShift);
 			se.transform.parent = transform;
