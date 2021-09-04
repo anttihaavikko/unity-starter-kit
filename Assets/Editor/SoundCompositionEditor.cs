@@ -17,6 +17,7 @@ namespace Editor
         private Vector2 _listScroll, _playerScroll;
         private Texture2D _black;
         private SoundComposition _object;
+        private string _filter = "";
 
         private static Texture2D MakeTex(int width, int height, Color col)
         {
@@ -53,11 +54,13 @@ namespace Editor
         {
             // base.OnInspectorGUI();
             // DrawDefaultInspector();
-            
+
             EditorGUILayout.BeginVertical(new GUIStyle
             {
                 fixedHeight = 500
             });
+
+            DrawFilter();
 
             _listScroll = GUILayout.BeginScrollView(_listScroll);
             EditorGUILayout.Space();
@@ -74,8 +77,18 @@ namespace Editor
             var row = 0;
             foreach (var clip in clips)
             {
+                if (_filter.Length > 0 && !clip.name.Contains(_filter)) continue;
+                
                 EditorGUILayout.BeginHorizontal(row % 2 == 0 ? eventStyle : new GUIStyle());
                 EditorGUILayout.LabelField(clip.name);
+                
+                if (GUILayout.Button("Play", GUILayout.MaxWidth(70.0f)))
+                {
+                    if (AudioManager.Instance)
+                    {
+                        AudioManager.Instance.PlayEffectAt(clip, Vector3.zero, 1f);
+                    }
+                }
 
                 if (GUILayout.Button("Add", GUILayout.MaxWidth(70.0f)))
                 {
@@ -97,6 +110,20 @@ namespace Editor
             EditorGUILayout.EndVertical();
             
             DrawPlayer();
+        }
+
+        private void DrawFilter()
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            _filter = EditorGUILayout.TextField(_filter);
+            
+            if (GUILayout.Button("Clear", GUILayout.MaxWidth(120.0f)))
+            {
+                _filter = "";
+            }
+            
+            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawPlayer()
