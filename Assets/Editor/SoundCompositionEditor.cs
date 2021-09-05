@@ -57,7 +57,7 @@ namespace Editor
 
             EditorGUILayout.BeginVertical(new GUIStyle
             {
-                fixedHeight = 500
+                fixedHeight = 350
             });
 
             DrawFilter();
@@ -82,7 +82,7 @@ namespace Editor
                 EditorGUILayout.BeginHorizontal(row % 2 == 0 ? eventStyle : new GUIStyle());
                 EditorGUILayout.LabelField(clip.name);
                 
-                if (GUILayout.Button("Play", GUILayout.MaxWidth(70.0f)))
+                if (GUILayout.Button("►", GUILayout.MaxWidth(20.0f)))
                 {
                     if (AudioManager.Instance)
                     {
@@ -128,9 +128,7 @@ namespace Editor
 
         private void DrawPlayer()
         {
-            EditorGUILayout.BeginVertical();
-
-            _playerScroll = GUILayout.BeginScrollView(_playerScroll, new GUIStyle
+            EditorGUILayout.BeginVertical(new GUIStyle
             {
                 padding = new RectOffset(0, 0, 20, 0)
             });
@@ -139,31 +137,31 @@ namespace Editor
             {
                 var row = _object.rows[i];
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(row.clip.name, EditorStyles.boldLabel, GUILayout.Width(80.0f));
-                row.volume = EditorGUILayout.Slider("", row.volume, 0f, 5f);
-                if (GUILayout.Button("Play", GUILayout.MaxWidth(70.0f)))
+                if (GUILayout.Button("►", GUILayout.MaxWidth(20.0f)))
                 {
                     if (AudioManager.Instance)
                     {
                         AudioManager.Instance.PlayEffectAt(row.clip, Vector3.zero, row.volume);
                     }
                 }
-                if (GUILayout.Button("Remove", GUILayout.MaxWidth(70.0f)))
+                GUILayout.Label(row.clip.name, EditorStyles.boldLabel, GUILayout.Width(80.0f));
+                row.volume = EditorGUILayout.Slider("", row.volume, 0f, 5f);
+                if (GUILayout.Button("X", GUILayout.MaxWidth(20.0f)))
                 {
                     _object.rows.RemoveAt(i);
                 }
                 GUILayout.EndHorizontal();
             }
-
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Play"))
+            
+            EditorGUILayout.Space();
+            
+            if (GUILayout.Button("► Play"))
             {
                 _object.Play();
             }
-            EditorGUILayout.EndHorizontal();
-            
+
             EditorGUILayout.EndVertical();
-            GUILayout.EndScrollView();
+            // GUILayout.EndScrollView();
         }
 
         public static T[] GetAtPath<T> (string path) {
