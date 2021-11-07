@@ -5,7 +5,7 @@ Temp/
 Library/
 Builds/
 Assets/_Ghosts/
-Scripts/Secrets.cs
+Secrets.cs
 Logs/
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
