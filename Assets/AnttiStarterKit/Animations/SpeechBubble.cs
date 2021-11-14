@@ -15,6 +15,7 @@ namespace AnttiStarterKit.Animations
         [SerializeField] private Color highlightColor = Color.red;
         [SerializeField] private float delayBetweenLetters = 0.02f;
         [SerializeField] private float delayBetweenWords = 0.05f;
+        [SerializeField] private bool staticPlacing = true;
 
         private Appearer appearer;
         private string hex;
@@ -117,7 +118,8 @@ namespace AnttiStarterKit.Animations
                 msg += ")";
             }
 
-            return msg;
+            var rest = message.Substring(pos).Replace("(", "").Replace(")", "");
+            return staticPlacing ? $"{msg}<color=#00000000>{rest}</color>" : msg;
         }
 
         private string ApplyColors(string text)
