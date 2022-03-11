@@ -7,9 +7,12 @@ namespace AnttiStarterKit.Managers
 	public class EffectManager : MonoBehaviour {
 
 		public AutoEnd[] effects;
+		public TextPopup textPopupPrefab;
 
 		[SerializeField]
 		private Queue<AutoEnd>[] effectPool;
+
+		private Queue<TextPopup> textPopupPool;
 
 		// ==================
 
@@ -35,6 +38,8 @@ namespace AnttiStarterKit.Managers
 			{
 				effectPool[i] = new Queue<AutoEnd>();
 			}
+
+			textPopupPool = new Queue<TextPopup>();
 		}
 
 		public GameObject AddEffect(int effect, Vector3 position, float angle = 0f) {
@@ -64,6 +69,16 @@ namespace AnttiStarterKit.Managers
 
 			return obj;
 		}
+		
+		private TextPopup GetTextPopup()
+		{
+			if (!textPopupPool.Any())
+			{
+				textPopupPool.Enqueue(Instantiate(textPopupPrefab));
+			}
+
+			return textPopupPool.Dequeue();
+		}
 
 		private void AddObjects(int index, int count)
 		{
@@ -80,6 +95,12 @@ namespace AnttiStarterKit.Managers
 			obj.gameObject.SetActive(false);
 			effectPool[obj.Pool].Enqueue(obj);
 		}
+		
+		public void ReturnToPool(TextPopup obj)
+		{
+			obj.gameObject.SetActive(false);
+			textPopupPool.Enqueue(obj);
+		}
 
 		public static void AddEffects(IEnumerable<int> ids, Vector3 position)
 		{
@@ -93,6 +114,16 @@ namespace AnttiStarterKit.Managers
 		{
 			var eff = Instance.AddEffect(id, position);
 			return eff.gameObject;
+		}
+
+		public static GameObject AddTextPopup(string content, Vector3 position)
+		{
+			var t = Instance.GetTextPopup();
+			t.transform.position = position;
+			t.Play(content);
+			var go = t.gameObject;
+			go.SetActive(true);
+			return go;
 		}
 	}
 }
