@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AnttiStarterKit.Extensions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,7 +22,8 @@ namespace AnttiStarterKit.Animations
 
         [SerializeField] private bool doColors;
     
-        [SerializeField] private Color backColor = Color.black, frontColor = Color.white;
+        [SerializeField] private List<Color> backColors = new() { Color.black };
+        [SerializeField] private List<Color> frontColors = new() { Color.white };
 
         private Vector3 originalScale;
         private Color originalBackColor, originalFrontColor;
@@ -43,7 +45,7 @@ namespace AnttiStarterKit.Animations
         {
             ApplyScaling(scaleAmount, TweenEasings.BounceEaseOut);
             ApplyRotation(Random.Range(-rotationAmount, rotationAmount), TweenEasings.BounceEaseOut);
-            ApplyColors(backColor, frontColor);
+            ApplyColors(backColors.Random(), frontColors.Random());
         
             var pos = GetSoundPos();
             // AudioManager.Instance.PlayEffectAt(53, pos, 0.22f);
