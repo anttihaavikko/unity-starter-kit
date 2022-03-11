@@ -21,7 +21,7 @@ namespace AnttiStarterKit.Animations
 
         [SerializeField] private bool doColors;
     
-        [SerializeField] private Color backColor, frontColor;
+        [SerializeField] private Color backColor = Color.black, frontColor = Color.white;
 
         private Vector3 originalScale;
         private Color originalBackColor, originalFrontColor;
