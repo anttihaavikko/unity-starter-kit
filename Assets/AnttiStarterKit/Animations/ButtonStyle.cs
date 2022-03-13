@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnttiStarterKit.Extensions;
+using AnttiStarterKit.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -25,6 +26,10 @@ namespace AnttiStarterKit.Animations
         [SerializeField] private List<Color> backColors = new() { Color.black };
         [SerializeField] private List<Color> frontColors = new() { Color.white };
 
+        [SerializeField] private int clickSound = -1, hoverSound = -1;
+        [SerializeField] private float clickVolume = 1f, hoverVolume = 1f;
+        
+
         private Vector3 originalScale;
         private Color originalBackColor, originalFrontColor;
 
@@ -46,10 +51,7 @@ namespace AnttiStarterKit.Animations
             ApplyScaling(scaleAmount, TweenEasings.BounceEaseOut);
             ApplyRotation(Random.Range(-rotationAmount, rotationAmount), TweenEasings.BounceEaseOut);
             ApplyColors(backColors.Random(), frontColors.Random());
-        
-            var pos = GetSoundPos();
-            // AudioManager.Instance.PlayEffectAt(53, pos, 0.22f);
-            // AudioManager.Instance.PlayEffectAt(49, pos, 0.718f);
+            DoSound(hoverSound, hoverVolume);
         }
     
         private void ApplyScaling(float amount, Func<float, float> easing)
@@ -91,6 +93,7 @@ namespace AnttiStarterKit.Animations
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            DoSound(hoverSound, hoverVolume);
             ApplyScaling(0, TweenEasings.BounceEaseOut);
             ApplyRotation(0, TweenEasings.BounceEaseOut);
             ApplyColors(originalBackColor, originalFrontColor);
@@ -98,10 +101,14 @@ namespace AnttiStarterKit.Animations
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            DoSound(clickSound, clickVolume);
+        }
+
+        private void DoSound(int index, float volume)
+        {
+            if (index < 0) return;
             var pos = GetSoundPos();
-            // AudioManager.Instance.PlayEffectAt(36, pos, 0.1f);
-            // AudioManager.Instance.PlayEffectAt(25, pos, 4f);
-            // AudioManager.Instance.PlayEffectAt(35, pos, 0.629f);
+            AudioManager.Instance.PlayEffectAt(index, pos, volume);
         }
     }
 }

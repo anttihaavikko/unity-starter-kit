@@ -38,8 +38,8 @@ namespace AnttiStarterKit.SettingsView
 
 		private void ChangeSoundVolume(float vol)
 		{
-			if (!(Mathf.Abs(vol - AudioManager.Instance.SoundVolume) > soundChangeThreshold)) return;
 			AudioManager.Instance.ChangeSoundVolume(vol);
+			if (!(Mathf.Abs(vol - AudioManager.Instance.SoundVolume) > soundChangeThreshold)) return;
 			AudioManager.Instance.PlayEffectFromCollection(changeSound, Vector3.zero);
 		}
 	}

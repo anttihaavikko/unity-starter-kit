@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AnttiStarterKit.Managers;
+using AnttiStarterKit.ScriptableObjects;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +18,7 @@ namespace AnttiStarterKit.Animations
         [SerializeField] private float delayBetweenLetters = 0.02f;
         [SerializeField] private float delayBetweenWords = 0.05f;
         [SerializeField] private bool staticPlacing = true;
+        [SerializeField] private SoundCollection toggleSound;
 
         private Appearer appearer;
         private string hex;
@@ -61,8 +64,17 @@ namespace AnttiStarterKit.Animations
 
             if (showing) return;
 
+            PlaySound();
             appearer.Show();
             showing = true;
+        }
+
+        private void PlaySound()
+        {
+            if (toggleSound)
+            {
+                AudioManager.Instance.PlayEffectFromCollection(toggleSound, transform.position);
+            }
         }
 
         private void Update()
@@ -91,6 +103,7 @@ namespace AnttiStarterKit.Animations
             }
 
             Hide();
+            PlaySound();
         }
 
         private void Hide()
