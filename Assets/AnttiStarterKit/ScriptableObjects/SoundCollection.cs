@@ -8,9 +8,11 @@ namespace AnttiStarterKit.ScriptableObjects
     [CreateAssetMenu(fileName = "New Sound Collection", menuName = "Sound collection", order = 0)]
     public class SoundCollection : ScriptableObject
     {
+        [SerializeField] private float volume = 1f;
         [SerializeField] private List<AudioClip> clips;
         
         public int Count => clips.Count;
+        public float Volume => volume;
 
         public AudioClip Random()
         {

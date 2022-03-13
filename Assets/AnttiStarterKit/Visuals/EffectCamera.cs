@@ -31,6 +31,21 @@ namespace AnttiStarterKit.Visuals
         private LensDistortion ld;
         private ColorAdjustments cg;
         private static readonly int Amount = Shader.PropertyToID("_Amount");
+        
+        private static EffectCamera instance = null;
+        public static EffectCamera Instance {
+            get { return instance; }
+        }
+
+        private void Awake()
+        {
+            if (instance != null && instance != this) {
+                Destroy (this.gameObject);
+                return;
+            }
+
+            instance = this;
+        }
 
         private void Start()
         {
@@ -89,8 +104,8 @@ namespace AnttiStarterKit.Visuals
                     Random.Range(-shakeAmount, shakeAmount) * mod, 0);
 
                 var rot = Quaternion.Euler(0, 0, Random.Range(-shakeAmount, shakeAmount) * mod * 1.5f);
-                var pos = cameraRig.transform.position;
-                cameraRig.position = pos + diff * 0.075f;
+
+                cameraRig.position = originalPos + diff * 0.075f;
                 cameraRig.rotation = rot;
             }
             else
@@ -130,6 +145,11 @@ namespace AnttiStarterKit.Visuals
             Chromate(0.5f * mod, 0.5f * mod);
             Bulge(defaultLensDistortion + 1f * mod, 1f * mod);
             Decolor(0.5f * mod, 3f * mod);
+        }
+
+        public static void Effect(float mod = 1f)
+        {
+            Instance.BaseEffect(mod);
         }
 
         public void TimeStop(int frames = 1)

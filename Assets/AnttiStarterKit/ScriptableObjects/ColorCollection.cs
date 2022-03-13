@@ -14,5 +14,10 @@ namespace AnttiStarterKit.ScriptableObjects
         {
             return !colors.Any() ? Color.white : colors.Random();
         }
+
+        public Color Get(int index)
+        {
+            return colors[index];
+        }
     }
 }

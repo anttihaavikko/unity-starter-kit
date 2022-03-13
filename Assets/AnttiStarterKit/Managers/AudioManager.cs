@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace AnttiStarterKit.Managers
 {
-	public class AudioManager : ObjectPool<SoundEffect> {
-
+	public class AudioManager : ObjectPool<SoundEffect>
+	{
 		public AudioSource curMusic;
 		public AudioSource[] musics;
 
@@ -18,9 +18,9 @@ namespace AnttiStarterKit.Managers
 
 		public float TargetPitch { get; set; } = 1f;
 
-		// private AudioReverbFilter reverb;
-		// private AudioReverbPreset fromReverb, toReverb;
-		
+		public float MusicVolume => musVolume;
+		public float SoundVolume => volume;
+
 		private AudioSource prevMusic;
 
 		private float fadeOutPos = 0f, fadeInPos = 0f;
@@ -29,7 +29,6 @@ namespace AnttiStarterKit.Managers
 		private bool doingLowpass, doingHighpass;
 
 		[SerializeField] private List<SoundCollection> soundCollections;
-		
 
 		/******/
 
@@ -38,7 +37,7 @@ namespace AnttiStarterKit.Managers
 			get { return instance; }
 		}
 
-		void Awake() {
+		private void Awake() {
 			if (instance != null && instance != this) {
 				Destroy (this.gameObject);
 				return;
@@ -49,6 +48,9 @@ namespace AnttiStarterKit.Managers
 			// reverb = GetComponent<AudioReverbFilter> ();
 			// fromReverb = AudioReverbPreset.Hallway;
 			// toReverb = AudioReverbPreset.Off;
+
+			volume = PlayerPrefs.GetFloat("SoundVolume", 0.5f);
+			musVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
 
 			DontDestroyOnLoad(instance.gameObject);
 		}
@@ -113,7 +115,7 @@ namespace AnttiStarterKit.Managers
 
 			if (fadeOutPos < 1f) fadeOutPos += Time.unscaledDeltaTime / fadeOutDuration;
 
-			if (curMusic && fadeInPos >= 0f) curMusic.volume = Mathf.Lerp(0f, musVolume * 1.5f, fadeInPos);
+			if (curMusic && fadeInPos >= 0f) curMusic.volume = Mathf.Lerp(0f, musVolume, fadeInPos);
 
 			if (prevMusic)
 			{
@@ -123,22 +125,24 @@ namespace AnttiStarterKit.Managers
 			}
 		}
 
-		public void PlayEffectFromCollection(int collection, Vector3 pos, float volume = 1f)
+		public void PlayEffectFromCollection(int collection, Vector3 pos, float v = 1f)
 		{
-			var clip = soundCollections[collection].Random();
-			PlayEffectAt(clip, pos, volume);
+			var c = soundCollections[collection];
+			var clip = c.Random();
+			PlayEffectAt(clip, pos, v * c.Volume);
 		}
 		
-		public void PlayEffectFromCollection(SoundCollection collection, Vector3 pos, float volume = 1f)
+		public void PlayEffectFromCollection(SoundCollection collection, Vector3 pos, float v = 1f)
 		{
+			if (!collection) return;
 			var clip = collection.Random();
-			PlayEffectAt(clip, pos, volume);
+			PlayEffectAt(clip, pos, v * collection.Volume);
 		}
 
-		public void PlayEffectAt(AudioClip clip, Vector3 pos, float volume, bool pitchShift = true) {
+		public void PlayEffectAt(AudioClip clip, Vector3 pos, float vol, bool pitchShift = true) {
 			var se = Get();
 			se.transform.position = pos;
-			se.Play (clip, volume, pitchShift);
+			se.Play (clip, vol, pitchShift);
 			se.transform.parent = transform;
 		}
 
@@ -150,32 +154,20 @@ namespace AnttiStarterKit.Managers
 			PlayEffectAt (effects [effect], pos, 1f, pitchShift);
 		}
 
-		public void PlayEffectAt(int effect, Vector3 pos, float volume, bool pitchShift = true) {
-			PlayEffectAt (effects [effect], pos, volume, pitchShift);
+		public void PlayEffectAt(int effect, Vector3 pos, float vol, bool pitchShift = true) {
+			PlayEffectAt (effects [effect], pos, vol, pitchShift);
 		}
 
-		public void ChangeMusicVolume(float vol) {
-			curMusic.volume = vol * 1.5f;
-			musVolume = vol * 1.5f;
-		}
-
-		public void ToMenu()
+		public void ChangeMusicVolume(float vol)
 		{
-			ChangeMusic(1, 0.2f, 0.2f, 0f);
+			PlayerPrefs.SetFloat("MusicVolume", vol);
+			curMusic.volume = musVolume = vol;
 		}
 
-		public void ToMain()
+		public void ChangeSoundVolume(float vol)
 		{
-			ChangeMusic(0, 0.2f, 0.2f, 0f);
-		}
-
-		public static void BaseSound(Vector3 p, float vol = 1f)
-		{
-			Instance.PlayEffectAt(4, p, 0.212f * vol);
-			Instance.PlayEffectAt(22, p, 0.277f * vol);
-			Instance.PlayEffectAt(24, p, 0.644f * vol);
-			Instance.PlayEffectAt(9, p, 0.286f * vol);
-			Instance.PlayEffectAt(0, p, 4f * vol);
+			PlayerPrefs.SetFloat("SoundVolume", vol);
+			volume = vol;
 		}
 	}
 }

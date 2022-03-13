@@ -23,6 +23,11 @@ namespace AnttiStarterKit.Utils
             Load();
         }
 
+        public bool IsSeen(T message)
+        {
+            return data.seen.Contains(message);
+        }
+
         public void Show(T message)
         {
             if (data.seen.Contains(message)) return;
