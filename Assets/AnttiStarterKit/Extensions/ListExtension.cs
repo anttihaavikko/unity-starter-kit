@@ -11,5 +11,10 @@ namespace AnttiStarterKit.Extensions
         {
             return list.Any() ? list[UnityEngine.Random.Range(0, list.Count)] : default;
         }
+        
+        public static T RandomWeighted<T>(this IList<T> list) where T : IWeighted
+        {
+            return list.Any() ? list.OrderByDescending(c => c.Weight()).ThenBy(_ => UnityEngine.Random.value).First() : default;
+        }
     }
 }
