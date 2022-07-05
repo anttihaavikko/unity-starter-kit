@@ -9,32 +9,32 @@ namespace AnttiStarterKit.Utils
         public static void Save(object data, string keySuffix = "")
         {
             var json = JsonUtility.ToJson(data, true);
-            PlayerPrefs.SetString(Key + keySuffix, json);
+            PermaSave.SetString(Key + keySuffix, json);
         }
 
         public static T Load<T>(string keySuffix = "") where T : class
         {
-            if (!PlayerPrefs.HasKey(Key + keySuffix)) return null;
+            if (!PermaSave.HasKey(Key + keySuffix)) return null;
             
-            var json = PlayerPrefs.GetString(Key + keySuffix);
+            var json = PermaSave.GetString(Key + keySuffix);
             return JsonUtility.FromJson<T>(json);
         }
 
         public static bool Exists(string keySuffix = "")
         {
-            return PlayerPrefs.HasKey(Key + keySuffix);
+            return PermaSave.HasKey(Key + keySuffix);
         }
 
         public static void Clear(string keySuffix = "")
         {
-            if (!PlayerPrefs.HasKey(Key + keySuffix)) return;
+            if (!PermaSave.HasKey(Key + keySuffix)) return;
             
-            PlayerPrefs.DeleteKey(Key + keySuffix);
+            PermaSave.DeleteKey(Key + keySuffix);
         }
 
         public static void Debug(string keySuffix = "")
         {
-            UnityEngine.Debug.Log(PlayerPrefs.GetString(Key + keySuffix, "No data"));
+            UnityEngine.Debug.Log(PermaSave.GetString(Key + keySuffix, "No data"));
         }
 
         public static T LoadOrCreate<T>(string keySuffix = "") where T : class, new()
