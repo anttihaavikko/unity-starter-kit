@@ -5,6 +5,7 @@ namespace AnttiStarterKit.Utils
 {
     public class PermaSave : MonoBehaviour
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
         private static extern void DoSetString(string key, string value);
         
@@ -19,8 +20,7 @@ namespace AnttiStarterKit.Utils
         
         [DllImport("__Internal")]
         private static extern bool DoHasKey(string key);
-
-#if UNITY_WEBGL && !UNITY_EDITOR
+        
         public static void SetString(string key, string value)
         {
             DoSetString(key, value);
