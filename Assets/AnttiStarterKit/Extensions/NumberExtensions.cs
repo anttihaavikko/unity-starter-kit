@@ -27,5 +27,10 @@ namespace AnttiStarterKit.Extensions
             if (value < min) return max - 1;
             return value % max;
         }
+
+        public static int AddWithLooping(this int value, int amount, int min, int max)
+        {
+            return (value + amount).LoopAround(min, max);
+        }
     }
 }
