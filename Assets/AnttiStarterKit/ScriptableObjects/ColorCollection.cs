@@ -10,6 +10,8 @@ namespace AnttiStarterKit.ScriptableObjects
     {
         [SerializeField] private List<Color> colors;
 
+        public int Count => colors.Count;
+
         public Color Random()
         {
             return !colors.Any() ? Color.white : colors.Random();
