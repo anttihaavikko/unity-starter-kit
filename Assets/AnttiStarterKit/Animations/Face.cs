@@ -39,7 +39,6 @@ namespace AnttiStarterKit.Animations
 		public float mouthSpeed = 1f;
 		public Vector3 mouthRange = new Vector3(0.1f, 0.1f, 1f);
 		public float browRange = 0.05f;
-		public Transform lookTarget;
 		public float lookSpeed = 1f;
 		public float emoteSpeed = 0.05f;
 
@@ -51,6 +50,8 @@ namespace AnttiStarterKit.Animations
 
 		public bool followMouse = false;
 		public Camera cam;
+		
+		public Vector3 LookTarget { get; set; }
 
 		// Use this for initialization
 		void Awake () {
@@ -162,7 +163,7 @@ namespace AnttiStarterKit.Animations
 			Vector3 mp = Input.mousePosition;
 			mp.z = 10f;
 			Vector3 mouseInWorld = cam.ScreenToWorldPoint(mp);
-			Vector2 lookPos = mouseInWorld - transform.parent.position;
+			Vector2 lookPos = (followMouse ? mouseInWorld : LookTarget) - transform.parent.position;
 
 			lookPos = Quaternion.Euler(new Vector3(0, 0, -transform.parent.rotation.eulerAngles.z)) * lookPos;
 
