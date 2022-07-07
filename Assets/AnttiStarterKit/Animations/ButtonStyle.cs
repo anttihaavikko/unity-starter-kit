@@ -39,6 +39,7 @@ namespace AnttiStarterKit.Animations
         {
             originalScale = transform.localScale;
             cam = Camera.main;
+            SaveOriginalColors();
         }
 
         private Vector3 GetSoundPos()
@@ -73,27 +74,38 @@ namespace AnttiStarterKit.Animations
         private void ApplyColors(Color back, Color front)
         {
             if (!doColors) return;
+            bgImages.ForEach(i => i.color = back);
+            frontImages.ForEach(i => i.color = front);
+            if (!texts.Any()) return;
+            texts.ForEach(t => t.color = front);
+        }
+
+        private void SaveOriginalColors()
+        {
+            if (!doColors) return;
             
             bgImages.ForEach(i =>
             {
                 originalBackColor = i.color;
-                i.color = back;
             });
 
             frontImages.ForEach(i =>
             {
                 originalFrontColor = i.color;
-                i.color = front;
             });
-
+            
             if (!texts.Any()) return;
             originalFrontColor = texts.First().color;
-            texts.ForEach(t => t.color = front);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             DoSound(hoverSound, hoverVolume);
+            Reset();
+        }
+
+        public void Reset()
+        {
             ApplyScaling(0, TweenEasings.BounceEaseOut);
             ApplyRotation(0, TweenEasings.BounceEaseOut);
             ApplyColors(originalBackColor, originalFrontColor);
