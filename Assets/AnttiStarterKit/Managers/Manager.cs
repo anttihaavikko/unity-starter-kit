@@ -2,19 +2,20 @@
 
 namespace AnttiStarterKit.Managers
 {
-	public class Manager : MonoBehaviour {
-		private static Manager instance = null;
-		public static Manager Instance {
-			get { return instance; }
-		}
+	public abstract class Manager<T> : MonoBehaviour where T : MonoBehaviour {
+		private static T instance;
+		public static T Instance => instance;
 
-		void Awake() {
-			if (instance != null && instance != this) {
-				Destroy (this.gameObject);
+		private void Awake()
+		{
+			var component = gameObject.GetComponent<T>();
+			
+			if (instance != default && instance != component) {
+				Destroy (gameObject);
 				return;
-			} else {
-				instance = this;
 			}
+
+			instance = component;
 		}
 	}
 }
