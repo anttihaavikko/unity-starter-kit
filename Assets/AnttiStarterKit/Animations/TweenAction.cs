@@ -82,7 +82,7 @@ namespace AnttiStarterKit.Animations
 		{
 			yield return new WaitForSeconds(tweenDelay);
 			hasBeenInit = true;
-			startPos = theObject.transform.localScale;
+			startPos = theObject && theObject.transform ? theObject.transform.localScale : Vector3.zero;
 		}
 
 		public IEnumerator SetStartColor()
