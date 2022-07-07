@@ -42,7 +42,7 @@ namespace AnttiStarterKit.Managers
 			textPopupPool = new Queue<TextPopup>();
 		}
 
-		public GameObject AddEffect(int effect, Vector3 position, float angle = 0f) {
+		private GameObject DoAddEffect(int effect, Vector3 position, float angle = 0f) {
 			var e = Get(effect);
 			e.transform.parent = transform;
 			e.transform.position = position;
@@ -106,13 +106,13 @@ namespace AnttiStarterKit.Managers
 		{
 			foreach (var id in ids)
 			{
-				Instance.AddEffect(id, position);
+				Instance.DoAddEffect(id, position);
 			}
 		}
 
-		public static GameObject AddEffect(int id, Vector3 position)
+		public static GameObject AddEffect(int id, Vector3 position, float angle = 0f)
 		{
-			var eff = Instance.AddEffect(id, position);
+			var eff = Instance.DoAddEffect(id, position, angle);
 			return eff.gameObject;
 		}
 
