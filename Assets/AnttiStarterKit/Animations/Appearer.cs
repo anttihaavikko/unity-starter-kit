@@ -9,19 +9,30 @@ namespace AnttiStarterKit.Animations
         public float appearAfter = -1f;
         public float hideDelay;
         public bool silent;
-        public GameObject visuals;
         public bool inScreenSpace;
-        public Camera cam;
-        
+
         public TMP_Text text;
-        private Vector3 size;
+
+        private Transform parent;
+        private GameObject wrap;
+        
+        private Camera cam;
 
         private void Awake()
         {
+            cam = Camera.main;
+            
             var t = transform;
-            size = t.localScale;
-            t.localScale = Vector3.zero;
-            if(visuals) visuals.SetActive(false);
+            var goName = gameObject.name;
+            var go = new GameObject(goName + " Appearer Parent");
+            wrap = new GameObject(goName + " Appearer Wrap");
+            parent = go.transform;
+            parent.parent = t.parent;
+            wrap.transform.parent = parent;
+            t.parent = wrap.transform;
+            
+            parent.localScale = Vector3.zero;
+            wrap.SetActive(false);
 
             if (appearAfter >= 0)
                 Invoke(nameof(Show), appearAfter);
@@ -38,8 +49,8 @@ namespace AnttiStarterKit.Animations
             CancelInvoke(nameof(MakeInactive));
             DoSound();
 
-            if(visuals) visuals.SetActive(true);
-            Tweener.Instance.ScaleTo(transform, size, 0.3f, 0f, TweenEasings.BounceEaseOut);
+            wrap.SetActive(true);
+            Tweener.Instance.ScaleTo(parent, Vector3.one, 0.3f, 0f, TweenEasings.BounceEaseOut);
         }
 
         public void Hide()
@@ -47,15 +58,14 @@ namespace AnttiStarterKit.Animations
             CancelInvoke(nameof(Show));
             DoSound();
 
-            Tweener.Instance.ScaleTo(transform, Vector3.zero, 0.2f, 0f, TweenEasings.QuadraticEaseOut);
+            Tweener.Instance.ScaleTo(parent, Vector3.zero, 0.2f, 0f, TweenEasings.QuadraticEaseOut);
         
-            if(visuals)
-                Invoke(nameof(MakeInactive), 0.2f);
+            Invoke(nameof(MakeInactive), 0.2f);
         }
 
         private void MakeInactive()
         {
-            visuals.SetActive(false);
+            wrap.SetActive(false);
         }
 
         private void DoSound()
