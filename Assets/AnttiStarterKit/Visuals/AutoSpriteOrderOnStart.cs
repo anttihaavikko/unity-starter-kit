@@ -6,14 +6,21 @@ namespace AnttiStarterKit.Visuals
     public class AutoSpriteOrderOnStart : MonoBehaviour
     {
         [SerializeField] private int offset;
+        [SerializeField] private Transform target;
+
+        private SortingGroup _group;
 
         private void Start()
         {
-            var group = GetComponent<SortingGroup>();
-            
-            if (group)
+            _group = GetComponent<SortingGroup>();
+            Apply();
+        }
+
+        public void Apply()
+        {
+            if (_group)
             {
-                group.sortingOrder = -Mathf.RoundToInt(transform.position.y * 10) + offset;
+                _group.sortingOrder = -Mathf.RoundToInt(target.position.y * 10) + offset;
             }
         }
     }
