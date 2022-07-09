@@ -21,5 +21,10 @@ namespace AnttiStarterKit.ScriptableObjects
         {
             return colors[index];
         }
+
+        public List<Color> ToList()
+        {
+            return colors;
+        }
     }
 }
