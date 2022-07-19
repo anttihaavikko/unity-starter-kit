@@ -1,4 +1,6 @@
 ﻿using System;
+using AnttiStarterKit.Managers;
+using AnttiStarterKit.ScriptableObjects;
 using TMPro;
 using UnityEngine;
 
@@ -6,36 +8,32 @@ namespace AnttiStarterKit.Animations
 {
     public class Appearer : MonoBehaviour
     {
+        [SerializeField] private SoundCollection soundCollection;
+        
         public float appearAfter = -1f;
         public float hideDelay;
         public bool silent;
+        public GameObject visuals;
         public bool inScreenSpace;
-
-        public TMP_Text text;
-
-        private Transform parent;
-        private GameObject wrap;
+        public Camera cam;
         
-        private Camera cam;
+        public TMP_Text text;
+        private Vector3 size;
 
         private void Awake()
         {
-            cam = Camera.main;
-            
             var t = transform;
-            var goName = gameObject.name;
-            var go = new GameObject(goName + " Appearer Parent");
-            wrap = new GameObject(goName + " Appearer Wrap");
-            parent = go.transform;
-            parent.parent = t.parent;
-            wrap.transform.parent = parent;
-            t.parent = wrap.transform;
-            
-            parent.localScale = Vector3.zero;
-            wrap.SetActive(false);
+            size = t.localScale;
+            t.localScale = Vector3.zero;
+            if(visuals) visuals.SetActive(false);
 
             if (appearAfter >= 0)
                 Invoke(nameof(Show), appearAfter);
+        }
+
+        public void ShowAfter()
+        {
+            Invoke(nameof(Show), appearAfter);
         }
 
         public void ShowAfter(float delay)
@@ -49,8 +47,8 @@ namespace AnttiStarterKit.Animations
             CancelInvoke(nameof(MakeInactive));
             DoSound();
 
-            wrap.SetActive(true);
-            Tweener.Instance.ScaleTo(parent, Vector3.one, 0.3f, 0f, TweenEasings.BounceEaseOut);
+            if(visuals) visuals.SetActive(true);
+            Tweener.Instance.ScaleTo(transform, size, 0.3f, 0f, TweenEasings.BounceEaseOut);
         }
 
         public void Hide()
@@ -58,14 +56,14 @@ namespace AnttiStarterKit.Animations
             CancelInvoke(nameof(Show));
             DoSound();
 
-            Tweener.Instance.ScaleTo(parent, Vector3.zero, 0.2f, 0f, TweenEasings.QuadraticEaseOut);
+            Tweener.Instance.ScaleTo(transform, Vector3.zero, 0.2f, 0f, TweenEasings.QuadraticEaseOut);
         
-            Invoke(nameof(MakeInactive), 0.2f);
+            if(visuals) Invoke(nameof(MakeInactive), 0.2f);
         }
 
         private void MakeInactive()
         {
-            wrap.SetActive(false);
+            visuals.SetActive(false);
         }
 
         private void DoSound()
@@ -75,7 +73,10 @@ namespace AnttiStarterKit.Animations
             var p = transform.position;
             var pos = inScreenSpace && cam ? cam.ScreenToWorldPoint(p) : p;
 
-            // TODO SOUND
+            if (soundCollection)
+            {
+                AudioManager.Instance.PlayEffectFromCollection(soundCollection, pos);
+            }
         }
 
         public void HideWithDelay()
