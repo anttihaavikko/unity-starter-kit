@@ -1,4 +1,5 @@
 using System;
+using AnttiStarterKit.Animations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -39,6 +40,14 @@ namespace AnttiStarterKit.Visuals
             inner.text = original.text;
             inner.fontSize = original.fontSize;
             inner.alignment = original.alignment;
+            inner.transform.localScale = Vector3.one;
+
+            var wobble = original.GetComponent<WobblingText>();
+            if (wobble)
+            {
+                var innerWobble = o.AddComponent<WobblingText>();
+                innerWobble.Clone(wobble);
+            }
 
             SetText(original.text);
         }
