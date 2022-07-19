@@ -2,6 +2,7 @@ using System;
 using AnttiStarterKit.Extensions;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace AnttiStarterKit.Animations
 {
@@ -10,10 +11,18 @@ namespace AnttiStarterKit.Animations
         [SerializeField] private float amount = 0.01f;
         [SerializeField] private float speed = 2f;
         
+        private float baseOffset;
         private TMP_Text textField;
+
+        public void Clone(WobblingText wobble)
+        {
+            amount = wobble.amount;
+            speed = wobble.speed;
+        }
 
         private void Awake()
         {
+            baseOffset = Random.value * 0.2f;
             textField = GetComponent<TMP_Text>();
         }
 
@@ -39,11 +48,11 @@ namespace AnttiStarterKit.Animations
         
         private void OffsetCharacter(int index, TMP_CharacterInfo info, ref Vector3[] verts)
         {
-            var offset = Vector3.zero.WhereY(Mathf.Sin(Time.time * speed + index * 0.5f) * amount);
+            var offset = Vector3.zero.WhereY(Mathf.Sin(Time.time * speed + index * 0.5f + baseOffset) * amount);
             verts[info.vertexIndex] += offset;
             verts[info.vertexIndex + 1] += offset;
             verts[info.vertexIndex + 2] += offset;
             verts[info.vertexIndex + 3] += offset;
-        } 
+        }
     }
 }
