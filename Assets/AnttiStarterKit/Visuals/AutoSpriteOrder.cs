@@ -22,5 +22,10 @@ namespace AnttiStarterKit.Visuals
                 _group.sortingOrder = -Mathf.RoundToInt(target.position.y * 10) + offset;
             }
         }
+
+        public void SetOffset(int o)
+        {
+            offset = o;
+        }
     }
 }
