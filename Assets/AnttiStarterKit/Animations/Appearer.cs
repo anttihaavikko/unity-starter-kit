@@ -9,7 +9,8 @@ namespace AnttiStarterKit.Animations
     public class Appearer : MonoBehaviour
     {
         [SerializeField] private SoundCollection soundCollection;
-        
+        [SerializeField] private Vector3 hiddenSize;
+
         public float appearAfter = -1f;
         public float hideDelay;
         public bool silent;
@@ -20,11 +21,13 @@ namespace AnttiStarterKit.Animations
         public TMP_Text text;
         private Vector3 size;
 
+        public bool IsShown { get; private set; }
+
         private void Awake()
         {
             var t = transform;
             size = t.localScale;
-            t.localScale = Vector3.zero;
+            t.localScale = hiddenSize;
             if(visuals) visuals.SetActive(false);
 
             if (appearAfter >= 0)
@@ -46,6 +49,7 @@ namespace AnttiStarterKit.Animations
             CancelInvoke(nameof(Hide));
             CancelInvoke(nameof(MakeInactive));
             DoSound();
+            IsShown = true;
 
             if(visuals) visuals.SetActive(true);
             Tweener.Instance.ScaleTo(transform, size, 0.3f, 0f, TweenEasings.BounceEaseOut);
@@ -55,8 +59,10 @@ namespace AnttiStarterKit.Animations
         {
             CancelInvoke(nameof(Show));
             DoSound();
+            
+            IsShown = false;
 
-            Tweener.Instance.ScaleTo(transform, Vector3.zero, 0.2f, 0f, TweenEasings.QuadraticEaseOut);
+            Tweener.Instance.ScaleTo(transform, hiddenSize, 0.2f, 0f, TweenEasings.QuadraticEaseOut);
         
             if(visuals) Invoke(nameof(MakeInactive), 0.2f);
         }
