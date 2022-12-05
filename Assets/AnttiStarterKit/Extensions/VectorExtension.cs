@@ -34,17 +34,11 @@ namespace AnttiStarterKit.Extensions
             return new Vector3(v.x, v.y, z);
         }
 
-        public static Vector3 FromAngle(float deg)
-        {
-            var angle = deg * Mathf.Deg2Rad;
-            return new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0);
-        }
-
         public static float RealAngle(this Vector3 v)
         {
             return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
         }
-        
+
         public static float RealAngle(this Vector2 v)
         {
             return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
