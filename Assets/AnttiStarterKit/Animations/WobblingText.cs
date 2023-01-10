@@ -16,6 +16,8 @@ namespace AnttiStarterKit.Animations
         private float baseOffset;
         private TMP_Text textField;
 
+        public int EndIndex { get; set; } = -1;
+
         public void Clone(WobblingText wobble)
         {
             amount = wobble.amount;
@@ -36,9 +38,11 @@ namespace AnttiStarterKit.Animations
             var verts = mesh.vertices;
             var realPos = 0;
             var styleStarted = false;
-            
+
             for (var i = 0; i < textField.text.Length; i++)
             {
+                if (EndIndex >= 0 && realPos >= EndIndex) break;
+                
                 var current = textField.text.Substring(i, 1);
                 if (current == "<")
                 {
@@ -54,7 +58,7 @@ namespace AnttiStarterKit.Animations
                     }
                     continue;
                 }
-                
+
                 OffsetCharacter(realPos, textField.textInfo.characterInfo[realPos], ref verts);
                 realPos++;
             }
