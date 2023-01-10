@@ -69,5 +69,13 @@ namespace AnttiStarterKit.Animations
         {
             return new Vector3(Random.Range(-max, max), Random.Range(-max, max), 0);
         }
+
+        public void StopShaking()
+        {
+            if (_durationLeft <= 0) return;
+            _durationLeft = 0f;
+            PositionTo(_startPos);
+            transform.localRotation = Quaternion.Euler(0, 0, 0);
+        }
     }
 }
