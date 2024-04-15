@@ -188,6 +188,10 @@ namespace Editor
                 // sprite
                 var sprite = obj.GetComponent<SpriteRenderer>();
                 if(sprite) sprite.color = color;
+                
+                // line
+                var line = obj.GetComponent<LineRenderer>();
+                if (line) line.startColor = line.endColor = color;
 
                 // textmeshpro
                 var text = obj.GetComponent<TMPro.TMP_Text>();
