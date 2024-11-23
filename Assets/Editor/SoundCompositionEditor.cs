@@ -15,6 +15,9 @@ namespace Editor
         private Vector2 _listScroll, _playerScroll;
         private Texture2D _black;
         private string _filter = "";
+        private List<GameObject> _garbage = new();
+
+        private static Vector3 SoundPos => Camera.main!.transform.position;
 
         private static Texture2D MakeTex(int width, int height, Color col)
         {
@@ -33,20 +36,20 @@ namespace Editor
 
         private void OnEnable()
         {
-            var amount = 0.15f;
+            const float amount = 0.15f;
             _black = MakeTex(600, 1, new Color(amount, amount, amount));
             var rows = serializedObject.FindProperty("rows");
         }
         
         public static List<T> FindAssetsByType<T>() where T : UnityEngine.Object
         {
-            List<T> assets = new List<T>();
-            string[] guids = AssetDatabase.FindAssets(string.Format("t:{0}", typeof(T)));
-            for( int i = 0; i < guids.Length; i++ )
+            var assets = new List<T>();
+            var guids = AssetDatabase.FindAssets($"t:{typeof(T)}");
+            foreach (var t in guids)
             {
-                string assetPath = AssetDatabase.GUIDToAssetPath( guids[i] );
-                T asset = AssetDatabase.LoadAssetAtPath<T>( assetPath );
-                if( asset != null )
+                var assetPath = AssetDatabase.GUIDToAssetPath(t);
+                var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                if(asset != null)
                 {
                     assets.Add(asset);
                 }
@@ -90,7 +93,7 @@ namespace Editor
                 {
                     if (AudioManager.Instance)
                     {
-                        AudioManager.Instance.PlayEffectFromCollection(collection, Vector3.zero, 1f);
+                        AudioManager.Instance.PlayEffectFromCollection(collection, SoundPos, 1f);
                     }
                 }
 
@@ -119,10 +122,7 @@ namespace Editor
                 
                 if (GUILayout.Button("►", GUILayout.MaxWidth(20.0f)))
                 {
-                    if (AudioManager.Instance)
-                    {
-                        AudioManager.Instance.PlayEffectAt(clip, Vector3.zero, 1f);
-                    }
+                    PlayClip(clip, 1f);
                 }
 
                 if (GUILayout.Button("Add", GUILayout.MaxWidth(70.0f)))
@@ -176,7 +176,7 @@ namespace Editor
                 {
                     if (AudioManager.Instance)
                     {
-                        AudioManager.Instance.PlayEffectFromCollection((SoundCollection)row.FindPropertyRelative("collection").objectReferenceValue, Vector3.zero, row.FindPropertyRelative("volume").floatValue);
+                        AudioManager.Instance.PlayEffectFromCollection((SoundCollection)row.FindPropertyRelative("collection").objectReferenceValue, SoundPos, row.FindPropertyRelative("volume").floatValue);
                     }
                 }
                 GUILayout.Label("★ " + row.FindPropertyRelative("collection").objectReferenceValue.name, EditorStyles.boldLabel, GUILayout.Width(80.0f));
@@ -194,10 +194,8 @@ namespace Editor
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("►", GUILayout.MaxWidth(20.0f)))
                 {
-                    if (AudioManager.Instance)
-                    {
-                        AudioManager.Instance.PlayEffectAt((AudioClip)row.FindPropertyRelative("clip").objectReferenceValue, Vector3.zero, row.FindPropertyRelative("volume").floatValue);
-                    }
+                    var clip = (AudioClip)row.FindPropertyRelative("clip").objectReferenceValue;
+                    PlayClip(clip, row.FindPropertyRelative("volume").floatValue);
                 }
                 GUILayout.Label(row.FindPropertyRelative("clip").objectReferenceValue.name, EditorStyles.boldLabel, GUILayout.Width(80.0f));
                 row.FindPropertyRelative("volume").floatValue = EditorGUILayout.Slider("", row.FindPropertyRelative("volume").floatValue, 0f, 5f);
@@ -212,13 +210,52 @@ namespace Editor
             
             if (GUILayout.Button("► Play"))
             {
-                ((SoundComposition)serializedObject.targetObject).Play();
+                var sc = ((SoundComposition)serializedObject.targetObject);
+                if (!EditorApplication.isPlaying)
+                {
+                    _garbage.AddRange(sc.PlayInEditMode(SoundPos));
+                }
+                else
+                {
+                    sc.Play(SoundPos);
+                }
+            }
+
+            if (_garbage.Count > 0)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.Space();
+                EditorGUILayout.Space();
+                
+                GUILayout.BeginHorizontal();
+                
+                GUILayout.Label($"{_garbage.Count} temp garbage in hierarchy!", EditorStyles.boldLabel);
+                
+                if (GUILayout.Button("Clear"))
+                {
+                    _garbage.ForEach(DestroyImmediate);
+                    _garbage.Clear();
+                }
+                
+                GUILayout.EndHorizontal();
             }
 
             EditorGUILayout.EndVertical();
             // GUILayout.EndScrollView();
             
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void PlayClip(AudioClip clip, float volume)
+        {
+            if (AudioManager.Instance)
+            {
+                AudioManager.Instance.PlayEffectAt(clip, SoundPos, volume);
+            }
+            else
+            {
+                _garbage.Add(SoundComposition.PlayInEditMode(clip, SoundPos, volume));
+            }
         }
 
         public static T[] GetAtPath<T> (string path) {
