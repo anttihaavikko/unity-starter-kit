@@ -25,7 +25,9 @@ namespace AnttiStarterKit.ScriptableObjects
 
         public List<GameObject> PlayInEditMode(Vector3 pos)
         {
-            return rows.Select(r => PlayInEditMode(r.clip, pos, r.volume)).ToList();
+            return rows.Select(r => PlayInEditMode(r.clip, pos, r.volume))
+                .Concat(collections.Select(c => PlayInEditMode(c.collection.Random(), pos, c.volume)))
+                .ToList();
         }
 
         public void Play(Vector3 pos, float volume = 1f)
